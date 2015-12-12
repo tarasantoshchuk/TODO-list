@@ -1,4 +1,5 @@
 //General-purpose API
+var mongoose = require('mongoose');
 
 module.exports = function (app, passport) {
 
@@ -23,9 +24,22 @@ module.exports = function (app, passport) {
 
     //Handle todo list page
     app.get('/todolist', isLoggedIn, function (req, res) {
-        res.sendfile('./public/view/todolist.html', {
-            user: req.user
-        })
+        var notes = require('../models/notes');
+        var mongoose = require('mongoose');
+        var model = mongoose.model('Notes');
+        var notelist = [];
+
+        //Copy all notes into notelist
+        model.find({}, function (err, notes) {
+            notes.forEach(function (note) {
+                notelist.push(note.note);
+            })
+        }).then(function () {
+            res.render('../public/view/todolist.ejs', {
+                user: req.user,
+                notes: notelist
+            })
+        });
     });
 
     //Handle signup

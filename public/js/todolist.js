@@ -7,7 +7,7 @@ $(document).ready(function () {
 
     var addBtnOnClick = function () {
         //Replace the Add button with an adding form
-        $("#addbtn").parent().replaceWith('<div class="col-xs-5 col-xs-offset-1 col-sm-4 col-sm-offset-3"><input type="text" class="form-control"></div><div class="col-xs-3 col-sm-2"><button type="button" id="finalizeaddbtn" class="btn btn-success btn-block">Add</button></div><div class="col-xs-3 col-sm-2"><button type="button" id="canceladdbtn" class="btn btn-warning btn-block">Cancel</button></div>');
+        $("#addbtn").parent().replaceWith('<div class="col-xs-5 col-xs-offset-1 col-sm-4 col-sm-offset-3"><input id="addinp" type="text" class="form-control"></div><div class="col-xs-3 col-sm-2"><button type="button" id="finalizeaddbtn" class="btn btn-success btn-block">Add</button></div><div class="col-xs-3 col-sm-2"><button type="button" id="canceladdbtn" class="btn btn-warning btn-block">Cancel</button></div>');
 
         //Handle cancellation
         $("#canceladdbtn").off();
@@ -21,6 +21,11 @@ $(document).ready(function () {
         $("#finalizeaddbtn").on("click", function () {
             //Add API stuff here
             console.log("Adding new todo...");
+            var value = $("#addinp").val();
+            console.log(value);
+            $.post("/todo/" + value, function (response) {
+                location.reload();
+            })
         });
     };
 

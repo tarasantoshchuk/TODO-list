@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>To Do List</title>
+
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body class="body-top-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+                <div class="panel-group">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                            <a data-toggle="collapse" data-target="#todocollapse" href="#todocollapse">To-Do List</a>
+                            </h3>
+                        </div>
+                        <div id="todocollapse" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <form class="form-horizontal" role="form">
+                                    <% console.log("notelist in templ " + JSON.stringify(notes));  %>
+                                        <% notes.forEach(function(el, index) {%>
+                                            <p>
+                                                <div class="row">
+                                                    <div class="form-group">
+                                                        <span class="col-xs-5 col-xs-offset-1 col-sm-4 col-sm-offset-3"><%= el %></span>
+                                                        <div class="col-xs-3 col-sm-2">
+                                                            <button type="button" class="btn btn-primary btn-block btn-remove">Remove</button>
+                                                        </div>
+                                                        <div class="col-xs-3 col-sm-2">
+                                                            <button type="button" class="btn btn-primary btn-block btn-edit">Edit</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </p>
+                                            <%});%>
+                                                <div class="row">
+                                                    <div class="form-group">
+                                                        <div class="col-xs-6 col-xs-offset-6 col-sm-2 col-sm-offset-9">
+                                                            <button type="button" id="addbtn" class="btn btn-success btn-block">Add ToDo</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../js/todolist.js"></script>
+</body>
+
+</html>
