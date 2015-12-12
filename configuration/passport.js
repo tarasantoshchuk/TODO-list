@@ -1,87 +1,85 @@
 var LocalStrategy = require('passport-local').Strategy;
 
-var User = require('../models/user.js'); // get our mongoose model
+//Get the mongoose model
+var User = require('../models/user.js');
 
-module.exports = function(passport) {
+module.exports = function (passport) {
 
-  // used to serialize the user for the session
-  passport.serializeUser(function(user, done) {
-      done(null, user.id);
-  });
+    // Serialize the user for the duration of the session
+    passport.serializeUser(function (user, done) {
+        done(null, user.id);
+    });
 
-  // used to deserialize the user
-  passport.deserializeUser(function(id, done) {
-      User.findById(id, function(err, user) {
-          done(err, user);
-      });
-  });
-
-  //local signup
-  passport.use('local-signup', new LocalStrategy({
-      // by default, local strategy uses username and password, we will override with phone number
-      usernameField : 'phoneNumber',
-      passwordField : 'password',
-      passReqToCallback : true // allows us to pass back the entire request to the callback
-    },
-    function(req, email, password, done) {
-
-      // asynchronous
-      // User.findOne wont fire unless data is sent back
-      process.nextTick(function() {
-          User.findOne({ 'phoneNumber' :  email }, function(err, user) {
-              // if there are any errors, return the error
-              if (err)
-                  return done(err);
-
-              // check to see if theres already a user with that email
-              if (user) {
-                  return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
-              } else {
-
-                  // if there is no user with that email
-                  // create the user
-                  var newUser = new User();
-
-                  // set the user's local credentials
-                  newUser.name = req.body.firstname;
-                  newUser.surname = req.body.lastname;
-                  newUser.password = newUser.generateHash(password);
-				          newUser.phoneNumber = req.body.phoneNumber;
-
-                  // save the user
-                  newUser.save(function(err) {
-                      if (err)
-                          throw err;
-                      return done(null, newUser);
-                  });
-              }
-          });
-      });
-  }));
-  
-  //user login
-  passport.use('local-login', new LocalStrategy({
-        usernameField : 'phoneNumber',
-        passwordField : 'password',
-        passReqToCallback : true 
-    },
-    function(req, phone_number, password, done) {
-        User.findOne({ 'phoneNumber' :  phone_number }, function(err, user) {
-
-            //return error, if any
-            if (err)
-                return done(err);
-
-            //handle user not exist
-            if (!user)
-                return done(null, false, req.flash('loginMessage', 'No such user. REgister if you don\'t have account'));
-
-            //handle wrong password
-            if (!user.validPassword(password))
-                return done(null, false, req.flash('loginMessage', 'Wrong password'));
-
-            //handle happy-pass
-            return done(null, user);
+    // Deserialize the user
+    passport.deserializeUser(function (id, done) {
+        User.findById(id, function (err, user) {
+            done(err, user);
         });
-    }));
+    });
+
+    //Signup handler
+    passport.use('local-signup', new LocalStrategy({
+            // Overriding username with phoneNumber as per the spec
+            usernameField: 'phoneNumber',
+            passwordField: 'password',
+            passReqToCallback: true
+        },
+        function (req, email, password, done) {
+
+            // asynchronousl; user.findOne wont fire unless data is sent back
+            process.nextTick(function () {
+                User.findOne({
+                    'phoneNumber': email
+                }, function (err, user) {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    if (user) {
+                        return done(null, false, req.flash('signupMessage', 'Oh no! The user with this e-mail address already exists.'));
+                    } else {
+                        //Create the user
+                        var newUser = new User();
+
+                        // Set the user's local credentials
+                        newUser.name = req.body.firstname;
+                        newUser.surname = req.body.lastname;
+                        newUser.password = newUser.generateHash(password);
+                        newUser.phoneNumber = req.body.phoneNumber;
+
+                        // Save the user
+                        newUser.save(function (err) {
+                            if (err) {
+                                throw err;
+                            }
+                            return done(null, newUser);
+                        });
+                    }
+                });
+            });
+        }));
+
+    //Login handler
+    passport.use('local-login', new LocalStrategy({
+            usernameField: 'phoneNumber',
+            passwordField: 'password',
+            passReqToCallback: true
+        },
+        function (req, phone_number, password, done) {
+            User.findOne({
+                'phoneNumber': phone_number
+            }, function (err, user) {
+                if (err) {
+                    return done(err);
+                }
+                if (!user) {
+                    return done(null, false, req.flash('loginMessage', 'Oh no! This user does not exist. (Sign up if you want to make an account)'));
+                }
+                if (!user.validPassword(password)) {
+                    return done(null, false, req.flash('loginMessage', 'Oh no! The password is incorrect.'));
+                }
+                //handle happy-pass
+                return done(null, user);
+            });
+        }));
 };

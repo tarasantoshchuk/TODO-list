@@ -1,7 +1,5 @@
-//todo list related api
+//To-Do List API
 
-module.exports = function(app, passport)
-{
-	
+module.exports = function (app, passport) {
+
 };
-
