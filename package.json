@@ -1,11 +1,21 @@
 {
-  "name": "converter",
+  "name": "TODO-list",
   "version": "1.0.0",
-  "private": true,
+  "description": "A To-Do List Project",
   "main": "./app.js",
   "scripts": {
     "start": "node app.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/tarasantoshchuk/TODO-list.git"
+  },
+  "keywords": [
+    "lnu",
+    "pmi",
+    "educational",
+    "todo"
+  ],
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.13.2",
@@ -25,5 +35,11 @@
     "connect-flash" : "~0.1.1",
 
     "method-override": "~1.0.0"
-  }
+  },
+  "author": "Pmi-31 Team 1",
+  "license": "MIT",
+  "bugs": {
+    "url": "http://github.com/tarasantoshchuk/TODO-list/issues"
+  },
+  "homepage": "http://github.com/tarasantoshchuk/TODO-list"
 }
