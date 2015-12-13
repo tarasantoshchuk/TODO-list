@@ -93,4 +93,10 @@ $(document).ready(function () {
     $(".btn-edit").on("click", editBtnOnClick);
     $(".btn-remove").off();
     $(".btn-remove").on("click", removeBtnOnClick);
+
+    $("#dropbtn").on("click", function () {
+        $.delete("/clear", function (response) {
+            location.reload();
+        })
+    });
 });

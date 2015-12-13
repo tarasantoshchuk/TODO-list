@@ -22,7 +22,7 @@ module.exports = function (app, passport) {
 
             if (note) {
                 res.status(500);
-                res.send('Oh no! This noteaddress already exists.');
+                res.send('Oh no! This note already exists.');
             } else {
                 newnote.save(function (err) {
                     if (err) {
@@ -49,7 +49,8 @@ module.exports = function (app, passport) {
             },
             function (err, note) {
                 if (err) {
-                    handleError(res, err);
+                    res.status(500);
+                    res.send(err);
                 }
                 res.send("Successfully edited note!");
             })
@@ -62,9 +63,22 @@ module.exports = function (app, passport) {
             note: req.params.value
         }, function (err) {
             if (err) {
-                handleError(res, err);
+                res.status(500);
+                res.send(err);
             }
             res.send("Successfully deleted note!");
+        })
+    });
+
+    //Handle full deletion
+
+    app.delete('/clear', function (req, res) {
+        Note.remove({}, function (err) {
+            if (err) {
+                res.status(500);
+                res.send(err);
+            }
+            res.send("Successfully deleted all notes!");
         })
     });
 };
