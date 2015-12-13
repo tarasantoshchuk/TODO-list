@@ -11,12 +11,30 @@ module.exports = function (app, passport) {
         var newnote = new Note({
             note: req.params.value
         });
-        newnote.save(function (err) {
+
+        Note.findOne({
+            note: req.params.value
+        }, function (err, note) {
             if (err) {
-                handleError(res, err);
+                res.status(500);
+                res.send(err);
             }
-            res.send("Successfully added note!");
-        })
+
+            if (note) {
+                res.status(500);
+                res.send('Oh no! This noteaddress already exists.');
+            } else {
+                newnote.save(function (err) {
+                    if (err) {
+                        res.status(500);
+                        res.send(err);
+                    } else {
+                        res.send("Successfully added note!");
+
+                    }
+                });
+            }
+        });
     });
 
     //Handle note editing
