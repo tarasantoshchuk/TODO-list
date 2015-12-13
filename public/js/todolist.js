@@ -3,7 +3,10 @@ $(document).ready(function () {
     var removeBtnOnClick = function () {
         //Add API stuff here
         console.log("Removing todo...");
-    };
+        var value = $(this).parent().parent().children("span").text();
+        $.delete("/todo/" + value, function (response) {
+            location.reload();
+        })
 
     var addBtnOnClick = function () {
         //Replace the Add button with an adding form

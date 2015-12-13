@@ -19,4 +19,15 @@ module.exports = function (app, passport) {
             res.send("Successfully added user!");
         })
     });
+	
+	app.delete('/todo/:value', function (req, res) {
+        Note.remove({
+            note: req.params.value
+        }, function (err) {
+            if (err) {
+                handleError(res, err);
+            }
+            res.send("Successfully deleted note!");
+        })
+    });
 };
