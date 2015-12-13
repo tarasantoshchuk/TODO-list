@@ -8,19 +8,38 @@ module.exports = function (app, passport) {
     //Handle note addition
 
     app.post('/todo/:value', function (req, res) {
-        var value = req.params.value;
         var newnote = new Note({
-            note: value
+            note: req.params.value
         });
         newnote.save(function (err) {
             if (err) {
                 handleError(res, err);
             }
-            res.send("Successfully added user!");
+            res.send("Successfully added note!");
         })
     });
-	
-	app.delete('/todo/:value', function (req, res) {
+
+    //Handle note editing
+
+    app.put('/todo/:value/:newvalue', function (req, res) {
+        Note.update({
+                note: req.params.value
+            }, {
+                $set: {
+                    note: req.params.newvalue
+                }
+            },
+            function (err, note) {
+                if (err) {
+                    handleError(res, err);
+                }
+                res.send("Successfully edited note!");
+            })
+    });
+
+    //Handle note deletion
+
+    app.delete('/todo/:value', function (req, res) {
         Note.remove({
             note: req.params.value
         }, function (err) {

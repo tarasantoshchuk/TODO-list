@@ -1,12 +1,33 @@
+//jQuery extension methods to make shortcuts for $.put / $.delete, similar to $.get / $.post
+//Source: http://stepansuvorov.com/blog/2014/04/jquery-put-and-delete/
+
+jQuery.each(["put", "delete"], function (i, method) {
+    jQuery[method] = function (url, data, callback, type) {
+        if (jQuery.isFunction(data)) {
+            type = type || callback;
+            callback = data;
+            data = undefined;
+        }
+
+        return jQuery.ajax({
+            url: url,
+            type: method,
+            dataType: type,
+            data: data,
+            success: callback
+        });
+    };
+});
+
 $(document).ready(function () {
 
     var removeBtnOnClick = function () {
-        //Add API stuff here
         console.log("Removing todo...");
         var value = $(this).parent().parent().children("span").text();
         $.delete("/todo/" + value, function (response) {
             location.reload();
         })
+    };
 
     var addBtnOnClick = function () {
         //Replace the Add button with an adding form
@@ -19,10 +40,9 @@ $(document).ready(function () {
             $("#addbtn").on("click", addBtnOnClick);
         });
 
-        //Handle confirmed editing
+        //Handle confirmed addition
         $("#finalizeaddbtn").off();
         $("#finalizeaddbtn").on("click", function () {
-            //Add API stuff here
             console.log("Adding new todo...");
             var value = $("#addinp").val();
             console.log(value);
@@ -44,7 +64,7 @@ $(document).ready(function () {
         console.log(curval);
 
         //Replace it with an editing form
-        $(this).parent().parent().replaceWith('<div class="form-group"><div class="col-xs-5 col-xs-offset-1 col-sm-4 col-sm-offset-3"><input type="text" class="form-control" value="' + curval + '"></div><div class="col-xs-3 col-sm-2"><button type="button" id="finalizeeditbtn" class="btn btn-success btn-block">Done</button></div><div class="col-xs-3 col-sm-2"><button type="button" class="btn btn-warning btn-block btn-cancel-edit">Cancel</button></div></div>');
+        $(this).parent().parent().replaceWith('<div class="form-group"><div class="col-xs-5 col-xs-offset-1 col-sm-4 col-sm-offset-3"><input id="editinp" type="text" class="form-control" value="' + curval + '"></div><div class="col-xs-3 col-sm-2"><button type="button" id="finalizeeditbtn" class="btn btn-success btn-block">Done</button></div><div class="col-xs-3 col-sm-2"><button type="button" class="btn btn-warning btn-block btn-cancel-edit">Cancel</button></div></div>');
 
         //Handle cancellation
         $(".btn-cancel-edit").off();
@@ -60,12 +80,13 @@ $(document).ready(function () {
         //Handle confirmed editing
 
         $("#finalizeeditbtn").off();
-        //Add API stuff here
         $("#finalizeeditbtn").on("click", function () {
-
-            console.log("Editing existing todo...");
+            var newval = $("#editinp").val();
+            console.log(newval);
+            $.put("/todo/" + curval + "/" + newval, function (response) {
+                location.reload();
+            })
         });
-
     };
 
     $(".btn-edit").off();
